@@ -1,5 +1,7 @@
 # LLM Observability Dashboards
 
+![Architecture](./docs/architecture.png)
+
 [![CI](https://github.com/cmangun/llm-observability-dashboards/actions/workflows/ci.yml/badge.svg)](https://github.com/cmangun/llm-observability-dashboards/actions/workflows/ci.yml)
 [![Docker](https://img.shields.io/badge/Docker-Compose-blue?style=flat-square&logo=docker)]()
 [![Prometheus](https://img.shields.io/badge/Prometheus-latest-orange?style=flat-square&logo=prometheus)]()

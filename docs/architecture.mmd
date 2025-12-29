@@ -1,0 +1,13 @@
+flowchart LR
+  App([Your App]) --> Prom[Prometheus]
+  Prom --> Grafana[Grafana]
+  Prom --> Alert[Alerts]
+  
+  subgraph Metrics
+    Latency[Latency P99]
+    Cost[Token Cost]
+    Errors[Error Rate]
+  end
+  
+  App --> Metrics
+  Metrics --> Prom
