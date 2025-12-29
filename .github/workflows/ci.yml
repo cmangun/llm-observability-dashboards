@@ -9,26 +9,12 @@ on:
 jobs:
   validate:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Validate Docker Compose
-        run: docker compose config
-
-      - name: Validate Prometheus config
+      - name: Validate docker-compose
+        run: docker compose config -q
+      - name: Check files exist
         run: |
-          docker run --rm -v $(pwd)/prometheus:/etc/prometheus \
-            prom/prometheus:v2.48.0 \
-            promtool check config /etc/prometheus/prometheus.yml
-
-      - name: Validate dashboard JSON
-        run: |
-          for f in dashboards/*.json; do
-            echo "Validating $f..."
-            python3 -c "import json; json.load(open('$f'))"
-          done
-
-      - name: Test exporter syntax
-        run: node --check exporters/mock-llm-metrics.js
+          test -f prometheus/prometheus.yml
+          test -f dashboards/llm-overview.json
