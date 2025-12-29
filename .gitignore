@@ -1,0 +1,9 @@
+-e # Data volumes
+prometheus_data/
+grafana_data/
+
+# Environment
+.env
+
+# OS
+.DS_Store

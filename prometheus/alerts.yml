@@ -1,0 +1,53 @@
+# LLM Service Alert Rules
+groups:
+  - name: llm-service-alerts
+    rules:
+      # High Error Rate
+      - alert: LLMHighErrorRate
+        expr: rate(llm_requests_total{status="error"}[5m]) / rate(llm_requests_total[5m]) > 0.05
+        for: 5m
+        labels:
+          severity: critical
+        annotations:
+          summary: "High error rate on LLM service"
+          description: "Error rate is {{ $value | humanizePercentage }} over the last 5 minutes"
+
+      # High Latency
+      - alert: LLMHighLatency
+        expr: histogram_quantile(0.99, rate(llm_request_duration_seconds_bucket[5m])) > 5
+        for: 5m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High latency on LLM service"
+          description: "P99 latency is {{ $value }}s over the last 5 minutes"
+
+      # Cost Ceiling Approaching
+      - alert: LLMCostCeilingApproaching
+        expr: sum(increase(llm_cost_usd_total[1h])) > 80
+        for: 10m
+        labels:
+          severity: warning
+        annotations:
+          summary: "LLM cost ceiling approaching"
+          description: "Hourly cost is ${{ $value | humanize }}"
+
+      # Token Usage Spike
+      - alert: LLMTokenUsageSpike
+        expr: rate(llm_tokens_total[5m]) > 1000
+        for: 5m
+        labels:
+          severity: info
+        annotations:
+          summary: "High token usage detected"
+          description: "Token rate is {{ $value }} tokens/second"
+
+      # Service Down
+      - alert: LLMServiceDown
+        expr: up{job="llm-service"} == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "LLM service is down"
+          description: "LLM metrics exporter is not responding"

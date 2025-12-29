@@ -1,0 +1,42 @@
+# Prometheus Configuration for LLM Observability
+global:
+  scrape_interval: 15s
+  evaluation_interval: 15s
+  external_labels:
+    monitor: 'llm-observability'
+
+# Alertmanager configuration (optional)
+# alerting:
+#   alertmanagers:
+#     - static_configs:
+#         - targets:
+#           - alertmanager:9093
+
+# Rule files
+rule_files:
+  - 'alerts.yml'
+
+# Scrape configurations
+scrape_configs:
+  # Prometheus self-monitoring
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['prometheus:9090']
+
+  # LLM Metrics Exporter
+  - job_name: 'llm-service'
+    static_configs:
+      - targets: ['llm-exporter:9091']
+    metrics_path: '/metrics'
+    scrape_interval: 10s
+
+  # Add your LLM services here
+  # - job_name: 'llm-inference'
+  #   static_configs:
+  #     - targets: ['llm-service:8080']
+  #   metrics_path: '/metrics'
+
+  # Grafana metrics
+  - job_name: 'grafana'
+    static_configs:
+      - targets: ['grafana:3000']
